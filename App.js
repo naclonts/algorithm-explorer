@@ -10,7 +10,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { addNode } from './actions'
 import rootReducer from './reducers';
-import GraphExplorer from './components/GraphExplorer';
+import GraphExplorer from './containers/GraphExplorer';
 import Home from './components/Home';
 
 const Stack = createStackNavigator();
@@ -34,6 +34,7 @@ const unsubscribe = store.subscribe(() => console.log(store.getState()));
 store.dispatch(addNode());
 store.dispatch(addNode());
 store.dispatch(addNode());
+setTimeout(() => store.dispatch(addNode()), 5000)
 unsubscribe();
 
 export default App;
