@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { addNode } from '../actions';
-import GraphView from '../components/GraphView'
+import GraphView from '../components/Graph';
 
 
 const mapStateToProps = state => {

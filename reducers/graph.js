@@ -1,30 +1,45 @@
 import { ADD_NODE } from '../actions'
 
+
+const NODE_STATE = {
+    undiscovered: 'undiscovered',
+    discovered: 'discovered',
+    completelyExplored: 'completelyExplored',
+};
+
 class Graph {
-    constructor(nodes) {
-        if (nodes) {
-            this.nodes = nodes
-        }
-        else {
-            this.nodes = []
-        }
+    constructor(nodes=[], exploreQueue=[]) {
+        // These arguments make a _shallow_ copy of the graph
+        // Todo: Maybe deep clone the nodes?
+        this.nodes = nodes;
+        this.exploreQueue = exploreQueue;
     }
-    addNode(node) {
-        this.nodes.push(node)
+
+    addNode(node, nodeLabel) {
+        return new Graph(
+            [...this.nodes, new Node(nodeLabel)],
+            this.exploreQueue,
+        );
     }
+
     nodeCount() {
-        return this.nodes.length
+        return this.nodes.length;
     }
 }
 
 class Node {
-    constructor(label) {
-        this.label = label
-        this.vertices = []
+    constructor(label, copyFrom=null) {
+        this.label = label;
+        this.vertices = copyFrom ? copyFrom.vertices : [];
+        // properties for BFS / DFS traversal
+        this.state = copyFrom ? copyFrom.state : NODE_STATE.undiscovered;
+        this.parent = copyFrom ? copyFrom.parent : null;
     }
 
     addVertex(node) {
-        this.vertices.push(node)
+        let newNode = new Node(this.label, this);
+        newNode.vertices = [...newNode.vertices, node];
+        return newNode;
     }
 }
 
@@ -39,7 +54,7 @@ const graphReducer = (state = INITIAL_STATE, action) => {
         case ADD_NODE:
             return {
                 ...state,
-                graph: new Graph([...state.graph.nodes, new Node(state.nextNodeLabel)]),
+                graph: state.graph.addNode(),
                 nextNodeLabel: state.nextNodeLabel + 1,
             }
         default:
